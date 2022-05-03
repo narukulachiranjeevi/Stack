@@ -1,0 +1,63 @@
+class Solution {
+    int make(String s,Stack<String> stack,int i){
+        String ans = "";
+        if(s.charAt(i)=='['){ stack.push("[");i++;}
+        while(i<s.length() && Character.isLetter(s.charAt(i))) ans+=s.charAt(i++);
+        stack.push(ans);
+        return i;
+    }
+    String ans="",cur="";
+    public String decodeString(String s) {
+        int pt1=0,size = s.length();
+        Stack<String> stack = new Stack<>();
+        while(pt1<size){
+            if(s.charAt(pt1)=='['){
+                pt1=make(s,stack,pt1);
+                continue;
+            }
+            else if(s.charAt(pt1)==']'){
+                String str=stack.pop();
+                stack.pop();
+                String st= "";
+                int n = Integer.parseInt(stack.pop());
+                while(n>0){
+                    st+=str;
+                    n--;
+                }
+                cur=st+cur;
+            }
+            else if(Character.isDigit(s.charAt(pt1))){
+                String digit="";
+                while(Character.isDigit(s.charAt(pt1))) digit+=s.charAt(pt1++);
+                stack.push(digit);
+                continue;
+            }
+            else if(!stack.isEmpty()){
+               String sk = "";
+                while(pt1<size && Character.isLetter(s.charAt(pt1))) sk+=s.charAt(pt1++);
+                sk=stack.pop()+sk;
+                stack.push(sk);
+                continue;
+            }
+            if(stack.isEmpty()){
+                ans+=cur;
+                cur="";
+                if(pt1!=0) pt1++;
+                if(pt1<size && s.charAt(pt1)!='['){
+                    while(pt1<size && Character.isLetter(s.charAt(pt1))) ans+=s.charAt(pt1++);
+                }
+                continue;
+            }
+            else{
+                if(!Character.isDigit(s.charAt(pt1)))
+                {
+                    cur=stack.pop()+cur;
+                    stack.push(cur);
+                    cur="";
+                }
+            }
+            pt1++;
+        }
+        return ans;
+    }
+}
